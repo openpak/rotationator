@@ -18,6 +18,7 @@ WORKDIR /app
 COPY --from=build /out /app/rotationator
 COPY --from=deps /uploader/node_modules /app/uploader/node_modules
 COPY uploader/rotate.mjs uploader/package.json /app/uploader/
+RUN mkdir /data && chown 1000:1000 /data
 VOLUME /data
 USER 1000:1000
 CMD ["node", "/app/uploader/rotate.mjs"]

@@ -9,10 +9,10 @@ import { BossServiceDefinition } from '@pretendonetwork/grpc/boss/v2/boss_servic
 import { decryptWiiU } from '@pretendonetwork/boss-crypto';
 
 const env = (k, d) => process.env[k]?.trim() || d;
-const need = k => { const v = env(k); if (!v) { console.error(`missing ${k}`); process.exit(2); } return v; };
 
 const grpcHost = env('ROTATIONATOR_GRPC_HOST', 'openpak-nn-boss:20081');
-const apiKey = need('ROTATIONATOR_GRPC_APIKEY');
+const apiKey = env('ROTATIONATOR_GRPC_APIKEY', env('PN_BOSS_CONFIG_GRPC_BOSS_SERVER_API_KEY'));
+if (!apiKey) { console.error('missing ROTATIONATOR_GRPC_APIKEY'); process.exit(2); }
 const apps = env('ROTATIONATOR_APP_IDS', 'bb6tOEckvgZ50ciH,rjVlM7hUXPxmYQJh,zvGSM4kOrXpkKnpT').split(',');
 const taskId = env('ROTATIONATOR_TASK_ID', 'schdat2');
 const npdiUrl = env('ROTATIONATOR_NPDI_URL', 'http://openpak-nn-boss:20080');
@@ -30,8 +30,8 @@ const grpc = createClient(BossServiceDefinition, createChannel(grpcHost), {
 // The previous schedule: our own last output if we have one, otherwise the newest
 // VSSetting.byaml nn-boss serves for the first app (it is encrypted, so this needs the BOSS keys once).
 if (!existsSync(last)) {
-	const aes = env('ROTATIONATOR_WIIU_AES_KEY');
-	const hmac = env('ROTATIONATOR_WIIU_HMAC_KEY');
+	const aes = env('ROTATIONATOR_WIIU_AES_KEY', env('PN_BOSS_CONFIG_BOSS_WIIU_AES_KEY'));
+	const hmac = env('ROTATIONATOR_WIIU_HMAC_KEY', env('PN_BOSS_CONFIG_BOSS_WIIU_HMAC_KEY'));
 	if (!aes || !hmac) {
 		console.error(`no ${last} and no ROTATIONATOR_WIIU_AES_KEY/HMAC_KEY to decrypt the served file. ` +
 			`Put a plaintext VSSetting.byaml at ${last}, or supply the console-dumped BOSS keys.`);

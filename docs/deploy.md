@@ -4,11 +4,11 @@ Image `ghcr.io/openpak/rotationator` on tag. Runs as a oneshot unit fired by a s
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ROTATIONATOR_GRPC_APIKEY` | required | nn-boss management key (`PN_BOSS_CONFIG_GRPC_BOSS_SERVER_API_KEY`) |
+| `ROTATIONATOR_GRPC_APIKEY` | `PN_BOSS_CONFIG_GRPC_BOSS_SERVER_API_KEY` | nn-boss management key; the shared deploy `.env` already has it |
 | `ROTATIONATOR_GRPC_HOST` | `openpak-nn-boss:20081` | nn-boss gRPC |
 | `ROTATIONATOR_APP_IDS` | the three Splatoon ids | comma list of BOSS app ids |
 | `ROTATIONATOR_NPDI_URL` / `_HOST` | `http://openpak-nn-boss:20080` / `npdi.cdn.openpak.org` | only for the first-run download |
-| `ROTATIONATOR_WIIU_AES_KEY` / `_HMAC_KEY` | unset | BOSS keys, only to decrypt the served file on the first run |
+| `ROTATIONATOR_WIIU_AES_KEY` / `_HMAC_KEY` | `PN_BOSS_CONFIG_BOSS_WIIU_*` | BOSS keys, only to decrypt the served file on the first run |
 | `ROTATIONATOR_PHASE_HOURS` / `_SCHEDULE_DAYS` | 4 / 30 | Rotationator options |
 | `ROTATIONATOR_DRY_RUN` | unset | `1` generates but does not upload |
 
