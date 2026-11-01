@@ -12,7 +12,7 @@ Image `ghcr.io/openpak/rotationator` on tag. Runs as a oneshot unit fired by a s
 | `ROTATIONATOR_PHASE_HOURS` / `_SCHEDULE_DAYS` | 4 / 30 | Rotationator options |
 | `ROTATIONATOR_DRY_RUN` | unset | `1` generates but does not upload |
 
-`/data` holds `last.byaml` (the previous schedule) and an optional `overrides.json`
+`/data` holds `schedule.json` (written after each successful upload; the game server reads it, see below), `last.byaml` (the previous schedule) and an optional `overrides.json`
 (upstream phase override format).
 
 ## Prerequisites on the BOSS side
@@ -45,3 +45,27 @@ To go live:
    or copy a plaintext `VSSetting.byaml` to the `openpak-rotationator-data` volume as `last.byaml`.
 3. `systemctl --user start openpak-rotationator.service`, check the log shows three data IDs,
    then `systemctl --user enable --now openpak-rotationator.timer`.
+
+## Game-server side of the rotation
+
+`schedule.json` is the JSON twin of the uploaded `VSSetting.byaml` (`DateTime` base plus
+`Phases[]` with `Time` hours, `RegularRule/Stages`, `GachiRule/Stages`). The Splatoon NEX container
+(`openpak-splatoon`, nex image) mounts the volume read-only at `/rotation` and reads
+`/rotation/schedule.json` (`SPLATOON_ROTATION_FILE` overrides). At every phase boundary it closes
+participation on the regular and ranked lobbies that began in an earlier phase, so a lobby never carries
+players across a rotation change. With no file the game server does nothing rotation-related, which is the
+state today.
+
+### Go-live, in order (waits on the console-dumped BOSS keys)
+
+1. Set `PN_BOSS_CONFIG_BOSS_WIIU_AES_KEY` and `PN_BOSS_CONFIG_BOSS_WIIU_HMAC_KEY` in `~/openpak/deploy/.env`,
+   restart `openpak-nn-boss`. Check `schdat2` and `optdat2` tasksheets answer 200 (nn-boss seeding).
+2. Seed `/data/last.byaml`: place a plaintext `VSSetting.byaml`, or let the first run decrypt the served one.
+3. `systemctl --user start openpak-rotationator.service`; the log shows three data IDs and
+   `wrote /data/schedule.json`.
+4. Add `Volume=openpak-rotationator-data:/rotation:ro` to the `openpak-splatoon` quadlet and restart it
+   (`podman logs openpak-splatoon` then shows `Rotation: phase N began` within 15 seconds).
+5. `systemctl --user enable --now openpak-rotationator.timer`.
+
+Step 4 can be done before 1 to 3 (the file is simply absent); it is left for go-live so the splatoon
+container is not restarted for nothing. The volume does not exist until the first run creates it.

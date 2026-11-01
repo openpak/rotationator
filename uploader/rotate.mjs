@@ -66,3 +66,10 @@ for (const app of apps) {
 	console.log(`${app}: created file with data ID ${file.dataId}`);
 }
 renameSync(out, last);
+// The JSON twin of the schedule, for the Splatoon game server: it reads this file (the
+// openpak-rotationator-data volume, read-only) to close lobbies at each phase boundary.
+// Written only after a successful upload, so it never runs ahead of what consoles download.
+if (existsSync(`${out}.json`)) {
+	renameSync(`${out}.json`, `${dataDir}/schedule.json`);
+	console.log(`wrote ${dataDir}/schedule.json`);
+}
