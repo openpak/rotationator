@@ -1,0 +1,13 @@
+{
+	"name": "rotationator-uploader",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"license": "MIT",
+	"dependencies": {
+		"@pretendonetwork/boss-crypto": "^1.2.2",
+		"@pretendonetwork/grpc": "^2.3.5",
+		"nice-grpc": "^2.1.10",
+		"undici": "^7.16.0"
+	}
+}
