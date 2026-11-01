@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly Splatoon 1 stage rotation (rotationator)
+
+[Timer]
+OnCalendar=Mon *-*-* 03:00:00 UTC
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

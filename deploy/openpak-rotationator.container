@@ -1,0 +1,16 @@
+[Unit]
+Description=OpenPak Splatoon 1 rotation generator (rotationator, oneshot, fired by openpak-rotationator.timer)
+Wants=openpak-nn-boss.service
+After=openpak-nn-boss.service
+
+[Container]
+ContainerName=openpak-rotationator
+Image=ghcr.io/openpak/rotationator:latest
+AutoUpdate=registry
+Network=openpak.network
+EnvironmentFile=%h/openpak/deploy/.env
+Volume=openpak-rotationator-data:/data
+
+[Service]
+Type=oneshot
+TimeoutStartSec=300
