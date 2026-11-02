@@ -26,7 +26,7 @@ See [Deploy](docs/deploy.md). Settings are `ROTATIONATOR_*` environment variable
 ## Docs
 
 - [Deploy](docs/deploy.md)
-- [Upstream README](docs/upstream.md)
+- [Provenance](docs/provenance.md)
 
 ## Licence
 
