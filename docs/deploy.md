@@ -29,15 +29,14 @@ Pretendo's tool builds a 30 day schedule per run; the timer runs weekly, so the 
 always has more than three weeks left. Rotationator throws if the last file has run out,
 so do not let the timer lapse for more than 30 days.
 
-## Status on production (2026-11-01)
+## Going live
 
-Image pulled, quadlet `openpak-rotationator.container` (IP 10.89.2.225) and
-`openpak-rotationator.timer` (weekly, Mondays 03:00 UTC) installed from `deploy/`, timer
-**not enabled**. A manual run exits 3 ("no last.byaml and no keys"), which is the expected
-state until the BOSS keys exist. Also, nn-boss returns 404 for the Splatoon `schdat2` and
-`optdat2` tasksheets, so check those are served before trusting an upload.
+The quadlet `openpak-rotationator.container` and the weekly `openpak-rotationator.timer`
+(Mondays 03:00 UTC) are installed from `deploy/`; enable the timer only after the steps below.
+A manual run exits 3 ("no last.byaml and no keys") until the BOSS keys exist. Check that
+nn-boss serves the Splatoon `schdat2` and `optdat2` tasksheets before trusting an upload.
 
-To go live:
+Steps:
 
 1. Set `PN_BOSS_CONFIG_BOSS_WIIU_AES_KEY` and `PN_BOSS_CONFIG_BOSS_WIIU_HMAC_KEY` in
    `~/openpak/deploy/.env` (console-dumped, md5-checked by nn-boss) and restart `openpak-nn-boss`.
