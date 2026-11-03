@@ -3,11 +3,15 @@
 `git log` stays the source of truth; this file is the readable summary. The early history is
 the upstream project (Pretendo, MIT); OpenPak work starts at the fork commit.
 
+## v0.2.2 - 2026-11-03
+
+- Docs only: production state, OpenSplat key variables.
+
 ## v0.2.1 - 2026-11-03
 
 - Fix the first run from a file that ran out long ago (the last file Nintendo served ends in a 10 year phase):
   the base time is moved forward to the phase boundary containing now instead of the start of that phase, so
-  the new schedule no longer starts in 2023. Docs: how the seed was obtained.
+  the new schedule no longer starts in 2023. Docs: how the seed was obtained and the production state.
 
 ## v0.2.0 - 2026-11-01
 

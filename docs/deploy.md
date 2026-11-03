@@ -35,6 +35,14 @@ Caveat: uploading a file named `VSSetting.byaml` soft-deletes the previous one, 
 upload the original seed is no longer served. If `last.byaml` is lost, re-run the seed import and
 delete `/data/last.byaml` to start over; the generator continues from the phase that contains now.
 
+### Production state (2026-11-03)
+
+Live: the keys are set, nn-boss is seeded, the first run uploaded data IDs for all three app ids and wrote
+`schedule.json`, `openpak-splatoon` mounts the volume at `/rotation:ro` (log: `Rotation: phase N began`), and
+`openpak-rotationator.timer` is enabled. OpenSplat (`openpak-splatnet`) reads the same file from nn-boss and
+decrypts it, so it needs `PN_SPLATOON_WEBSITE_BOSS_AES_KEY` and `..._HMAC_KEY` (same values as the nn-boss keys)
+in `~/openpak/deploy/splatnet.env`.
+
 ## Cadence
 
 Pretendo's tool builds a 30 day schedule per run; the timer runs weekly, so the schedule
