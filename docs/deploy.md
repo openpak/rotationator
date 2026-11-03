@@ -18,10 +18,22 @@ Image `ghcr.io/openpak/rotationator` on tag. Runs as a oneshot unit fired by a s
 ## Prerequisites on the BOSS side
 
 nn-boss encrypts every upload with the Wii U BOSS AES and HMAC keys
-(`PN_BOSS_CONFIG_BOSS_WIIU_AES_KEY`, `..._HMAC_KEY`). They are console-dumped and not yet
-set on production, so uploads are refused until they are. The served seed file is encrypted
-too, so the first run needs either a plaintext `VSSetting.byaml` placed at `/data/last.byaml`
-or the same keys in `ROTATIONATOR_WIIU_*`.
+(`PN_BOSS_CONFIG_BOSS_WIIU_AES_KEY`, `..._HMAC_KEY`). They are console-dumped and set on
+production since 2026-11-03.
+
+### Seed (how the first schedule was obtained)
+
+The first run needs a starting `VSSetting.byaml`. The seed is the last file Nintendo served
+for Splatoon: nn-boss ships the archived encrypted copies (`seeding/files/1546`, `1547`, `1790`
+`.enc.VSSetting.byaml`, from Pretendo's BOSS archive) and `npm run cli -- import seed` (inside the
+container: `node dist/cli/cli.js import seed` with `PN_BOSS_CLI_*` set, and `seeding/` linking to the
+image's `files/` and `tasksheets/`) stores them, decrypting with the keys and re-encrypting on serve.
+The rotationator then downloads the newest served `VSSetting.byaml` from nn-boss, decrypts it with
+the same keys and writes it to `/data/last.byaml` on the first run. Nothing is built by hand.
+
+Caveat: uploading a file named `VSSetting.byaml` soft-deletes the previous one, so after the first
+upload the original seed is no longer served. If `last.byaml` is lost, re-run the seed import and
+delete `/data/last.byaml` to start over; the generator continues from the phase that contains now.
 
 ## Cadence
 
@@ -33,7 +45,7 @@ so do not let the timer lapse for more than 30 days.
 
 The quadlet `openpak-rotationator.container` and the weekly `openpak-rotationator.timer`
 (Mondays 03:00 UTC) are installed from `deploy/`; enable the timer only after the steps below.
-A manual run exits 3 ("no last.byaml and no keys") until the BOSS keys exist. Check that
+The BOSS keys exist and nn-boss is seeded (see above). Check that
 nn-boss serves the Splatoon `schdat2` and `optdat2` tasksheets before trusting an upload.
 
 Steps:

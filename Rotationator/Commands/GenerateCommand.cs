@@ -61,6 +61,15 @@ public static class GenerateCommand
             }
 
             // The last phase is set to 10 years, so correct this to the correct phase length.
+            // If the file ran out long ago (for example the last file Nintendo served), the phase we
+            // are in is that last one: move the base forward to the phase boundary that contains now,
+            // otherwise the new schedule would start in the past.
+            if (lastPhasesStartIdx == lastPhases.Count - 1 && phaseLength > 0)
+            {
+                long elapsedHours = (long)(referenceNow - baseTime).TotalHours;
+                baseTime = baseTime.AddHours(elapsedHours / phaseLength * phaseLength);
+            }
+
             currentPhases.Last().Length = phaseLength;
         }
         else

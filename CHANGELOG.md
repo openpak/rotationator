@@ -3,6 +3,12 @@
 `git log` stays the source of truth; this file is the readable summary. The early history is
 the upstream project (Pretendo, MIT); OpenPak work starts at the fork commit.
 
+## v0.2.1 - 2026-11-03
+
+- Fix the first run from a file that ran out long ago (the last file Nintendo served ends in a 10 year phase):
+  the base time is moved forward to the phase boundary containing now instead of the start of that phase, so
+  the new schedule no longer starts in 2023. Docs: how the seed was obtained.
+
 ## v0.2.0 - 2026-11-01
 
 - After a successful upload the run also writes `/data/schedule.json`, the JSON twin of the schedule, which the Splatoon
