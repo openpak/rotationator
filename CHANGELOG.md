@@ -3,6 +3,10 @@
 `git log` stays the source of truth; this file is the readable summary. The early history is
 the upstream project (Pretendo, MIT); OpenPak work starts at the fork commit.
 
+## v0.2.3 - 2026-11-04
+
+- `generate` no longer throws "not supported yet" when no phase of the last file contains now: a file that starts in the future is extended from its own start, and a file whose phases are all over starts a fresh schedule at the phase boundary containing now.
+
 ## v0.2.2 - 2026-11-03
 
 - Docs only: production state, OpenSplat key variables.

@@ -55,22 +55,37 @@ public static class GenerateCommand
                 baseTime = loopTime;
                 currentPhases = lastPhases.Skip(lastPhasesStartIdx).Select(p => new GambitVersusPhase(p)).ToList();
             }
+            else if (referenceNow < lastBaseTime)
+            {
+                // The file starts in the future: nothing has elapsed, extend it from its own start.
+                baseTime = lastBaseTime;
+                currentPhases = lastPhases.Select(p => new GambitVersusPhase(p)).ToList();
+                lastPhasesStartIdx = 0;
+            }
             else
             {
-                throw new NotImplementedException("not supported yet");
+                // Every phase in the file is over. Start a fresh schedule at the phase boundary
+                // (counted from the end of the file) that contains now.
+                long elapsedHours = (long)(referenceNow - loopTime).TotalHours;
+                baseTime = phaseLength > 0 ? loopTime.AddHours(elapsedHours / phaseLength * phaseLength) : loopTime;
+                currentPhases = new List<GambitVersusPhase>();
+                lastPhasesStartIdx = lastPhases.Count; // skip the 10-year correction below
             }
 
             // The last phase is set to 10 years, so correct this to the correct phase length.
             // If the file ran out long ago (for example the last file Nintendo served), the phase we
             // are in is that last one: move the base forward to the phase boundary that contains now,
             // otherwise the new schedule would start in the past.
-            if (lastPhasesStartIdx == lastPhases.Count - 1 && phaseLength > 0)
+            if (lastPhasesStartIdx == lastPhases.Count - 1 && phaseLength > 0 && currentPhases.Count > 0)
             {
                 long elapsedHours = (long)(referenceNow - baseTime).TotalHours;
                 baseTime = baseTime.AddHours(elapsedHours / phaseLength * phaseLength);
             }
 
-            currentPhases.Last().Length = phaseLength;
+            if (currentPhases.Count > 0)
+            {
+                currentPhases.Last().Length = phaseLength;
+            }
         }
         else
         {
